@@ -1,0 +1,29 @@
+{
+  "bots": {
+    "bot1": {
+      "base_url_of_bot": "https://drtorrentxbeta1bot-be2929baa0bf.herokuapp.com",
+      "host": "Heroku",
+      "bot_uname": "@drtorrenthexbot"
+    },
+    "bot2": {
+      "base_url_of_bot": "https://drtorrentxbeta2bot-fd685965bf48.herokuapp.com",
+      "host": "Heroku",
+      "bot_uname": "@drx2bot"
+    },
+    "bot2": {
+      "base_url_of_bot": "https://drtorrentxbeta3bot-897d649dbbf4.herokuapp.com",
+      "host": "Heroku",
+      "bot_uname": "@drx3bot"
+    }
+  },
+  "channels": {
+    "chat1": {
+      "chat_id": "-1001929306007",
+      "message_id": "92"
+    },
+    "chat2": {
+      "chat_id": "-1002140641208",
+      "message_id": "2"
+    }
+  }
+}
