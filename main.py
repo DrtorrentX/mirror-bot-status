@@ -8,14 +8,14 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram.ext import Updater
+from telegram.ext.Updater import Updater as tgUpdater
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
 def getConfig(key):
     return environ.get(key, None)
 
-CONFIG_ENV_URL = getConfig('CONFIG_ENV_URL') or None
+CONFIG_ENV_URL = "https://gist.githubusercontent.com/DrtorrentX/a5170d53baede92cfd063ee59f2034d1/raw/.env" or None
 
 if CONFIG_ENV_URL:
     try:
@@ -29,8 +29,7 @@ if CONFIG_ENV_URL:
     except Exception as e:
         log_error(f"CONFIG_ENV_URL: {e}")
 
-CONFIG_JSON_URL = getConfig('CONFIG_JSON_URL') or None
-
+CONFIG_JSON_URL = "https://gist.githubusercontent.com/DrtorrentX/660b68d2f139e17e79487cf99c2e59cb/raw/config.json" or None
 if CONFIG_JSON_URL:
     try:
         res = rget(CONFIG_JSON_URL)
@@ -49,7 +48,7 @@ LOGGER = getLogger(__name__)
 
 
 
-BOT_TOKEN = getConfig('BOT_TOKEN') or None
+BOT_TOKEN = 5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs
 if BOT_TOKEN is None:
     LOGGER.error('BOT_TOKEN is not set')
     exit(1)
@@ -70,13 +69,13 @@ except:
 
 TIME_ZONE = getConfig('TIME_ZONE') or 'Asia/Calcutta'
 
-HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://github.com/junedkh/mirror-bot-status'><b>Status</b></a> <b>JMDKH Mirror Bots</b> 🤖"
+HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://telegram.dog/drtorrentxupdates'><b>Status</b></a> <b>Dr. Torrent X Bots</b> 🤖"
 
-FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2MmRl\n\n<b>⚒ Powered by</b> <a href='https://t.me/JMDKH_Team'>JMDKH Team ❤️</a>"
+FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZjM9\n\n<b>⚒ Powered by</b> <a href='https://telegram.dog/drtorrentxupdates'>Dr. Torrent X Team ❤️</a>"
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-
+updater = tgUpdater(token=BOT_TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
 
 
 def get_readable_time(seconds: int) -> str:
