@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram import Telegram
+from telegram import TelegramClient
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
@@ -77,7 +77,7 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2Mm
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
-telegram = Telegram(BOT_TOKEN)
+telegram = TelegramClient(BOT_TOKEN)
 telegram.bot.session.session_timeout = 20
 telegram.bot.session.connection_timeout = 15
 
