@@ -65,7 +65,7 @@ except:
 try:
     STATUS_UPDATE_INTERVAL = int(getConfig('STATUS_UPDATE_INTERVAL')) or 10
 except:
-    STATUS_UPDATE_INTERVAL = 10
+    STATUS_UPDATE_INTERVAL = 1800
 
 TIME_ZONE = getConfig('TIME_ZONE') or 'Asia/Calcutta'
 
