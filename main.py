@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram.ext.Updater import Updater as tgUpdater
+from telegram.ext import Updater as tgUpdater
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
