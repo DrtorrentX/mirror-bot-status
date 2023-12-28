@@ -77,7 +77,7 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2Mm
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-updater = Updater(token=BOT_TOKEN, use_context=True)
+updater = Updater(token=BOT_TOKEN)
 
 
 def get_readable_time(seconds: int) -> str:
