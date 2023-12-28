@@ -63,7 +63,7 @@ except:
     LOGGER.error("Error: config.json is not valid")
     exit(1)
 try:
-    STATUS_UPDATE_INTERVAL = int(getConfig('STATUS_UPDATE_INTERVAL')) or 10
+    STATUS_UPDATE_INTERVAL = int(getConfig('STATUS_UPDATE_INTERVAL')) or 1800
 except:
     STATUS_UPDATE_INTERVAL = 1800
 
