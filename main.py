@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram.ext import Updater as tgUpdater
+from telegram.ext import Updater as Updater
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
@@ -77,7 +77,7 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2Mm
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
-updater = tgUpdater(token=BOT_TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
+updater = Updater(token=BOT_TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
 
 
 def get_readable_time(seconds: int) -> str:
