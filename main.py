@@ -70,9 +70,9 @@ except:
 
 TIME_ZONE = getConfig('TIME_ZONE') or 'Asia/Calcutta'
 
-HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://github.com/junedkh/mirror-bot-status'><b>Status</b></a> <b>JMDKH Mirror Bots</b> 🤖"
+HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://telegram.dog/drtorrentxupdates'><b>Status</b></a> <b>Dr. Torrent X Bots</b> 🤖"
 
-FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2MmRl\n\n<b>⚒ Powered by</b> <a href='https://t.me/JMDKH_Team'>JMDKH Team ❤️</a>"
+FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZjM9\n\n<b>⚒ Powered by</b> <a href='https://telegram.dog/drtorrentxupdates'>Dr. Torrent X Team ❤️</a>"
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
