@@ -48,7 +48,7 @@ LOGGER = getLogger(__name__)
 
 
 
-BOT_TOKEN = 5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs
+BOT_TOKEN = "5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs" or None
 if BOT_TOKEN is None:
     LOGGER.error('BOT_TOKEN is not set')
     exit(1)
