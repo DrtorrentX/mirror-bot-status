@@ -7,9 +7,8 @@ from time import sleep
 from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
-from telegram import Bot
-from telegram.ext import Updater, CallbackContext
 from telegram.error import RetryAfter
+from telegram.ext import Updater as tgUpdater
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
@@ -47,6 +46,8 @@ load_dotenv('.env', override=True)
 
 LOGGER = getLogger(__name__)
 
+
+
 BOT_TOKEN = "5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs" or None
 if BOT_TOKEN is None:
     LOGGER.error('BOT_TOKEN is not set')
@@ -74,13 +75,7 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZj
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-
-# ... (other imports and code)
-
-updater = Updater(BOT_TOKEN, update_queue={'read_timeout': 20, 'connect_timeout': 15})
-
-# ... (rest of your code)
-
+updater = tgUpdater(BOT_TOKEN, update_queue={'read_timeout': 20, 'connect_timeout': 15})
 
 def get_readable_time(seconds: int) -> str:
     result = ''
@@ -114,14 +109,14 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(update_queue: CallbackContext, text: str, channel: dict):
+def editMessage(text: str, channel: dict):
     try:
-        update_queue.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
-                                         parse_mode='HTMl', disable_web_page_preview=True)
+        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
+                                    parse_mode='HTMl', disable_web_page_preview=True)
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
-        return editMessage(update_queue, text, channel)
+        return editMessage(text, channel)
     except Exception as e:
         if 'chat not found' in str(e).lower():
             LOGGER.error(f"Bot not found in {channel['chat_id']}")
@@ -133,6 +128,7 @@ def editMessage(update_queue: CallbackContext, text: str, channel: dict):
         else:
             LOGGER.error(str(e))
         delete_channel(channel)
+        return
 
 
 def delete_channel(channel):
@@ -195,41 +191,36 @@ def bot_status():
     return s_msg, active_bots, totalBotCount
 
 
-def edit_bot_status(update_queue: CallbackContext):
+def edit_bot_status():
     s_msg, active_bots, allbots = bot_status()
     msg = f'\n🧲 <b>Available Bots</b>: {active_bots}/{allbots} \n'
     msg += s_msg
-    update_queue.bot.send_message(chat_id=update_queue.job.context['chat_id'], text=msg)
+    return msg
 
 
-def main(update_queue: CallbackContext):
+def main():
     _channels = channels.values()
     if len(_channels) == 0:
         LOGGER.warning("No channels found")
         exit(1)
     msg = f"{HEADER_MSG}\n"+"{}"+f"{footer()}"
-    status = edit_bot_status(update_queue)
+    status = edit_bot_status()
     try:
         for channel in _channels:
             LOGGER.info(f"Updating {channel['chat_id']}: {channel['message_id']}")
             sleep(0.5)
-            editMessage(update_queue, msg.format("<code>Updating...</code>"), channel)
+            editMessage(msg.format("<code>Updating...</code>"), channel)
             _status = msg.format(status)
             sleep(0.5)
             if len(_status.encode()) < 4000:
-                editMessage(update_queue, _status, channel)
+                editMessage(_status, channel)
             else:
                 LOGGER.warning(f"Message too long for {channel['chat_id']}")
     except Exception as e:
         LOGGER.error(f"Error: {e}")
 
-def job_callback(update_queue: CallbackContext):
-    main(update_queue)
-    update_queue.job.context['job_queue'].run_once(job_callback, STATUS_UPDATE_INTERVAL)
-    
 if __name__ == '__main__':
     LOGGER.info("Starting...")
-    job_queue = updater.job_queue
-    job_queue.run_once(job_callback, 0)
-    updater.start_polling()
-    updater.idle()
+    while True:
+        main()
+        sleep(STATUS_UPDATE_INTERVAL)
