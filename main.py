@@ -110,14 +110,19 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(channel: dict, text: dict):
+def editMessage(context: CallbackContext):
+    channel = context.job.context
     try:
-        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
-                                    parse_mode='HTMl', disable_web_page_preview=True)
+        context.bot.edit_message_text(
+            text=context.args[0],  # Assuming the text is passed as a command argument
+            chat_id=channel['chat_id'],
+            message_id=channel['message_id'],
+            parse_mode='HTML',
+            disable_web_page_preview=True
+        )
     except RetryAfter as r:
-        LOGGER.warning(str(r))
-        sleep(r.retry_after * 1.5)
-        return editMessage(text, channel)
+        context.bot.send_message(channel['chat_id'], f"RetryAfter: {str(r)}")
+        context.job_queue.run_once(editMessage, r.retry_after, context=channel)
     except Exception as e:
         if 'chat not found' in str(e).lower():
             LOGGER.error(f"Bot not found in {channel['chat_id']}")
