@@ -8,15 +8,14 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram import Update, Bot
-from telegram.ext import Updater as tgUpdater, CallbackContext
+from telegram.ext import Updater as tgUpdater
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
 def getConfig(key):
     return environ.get(key, None)
 
-CONFIG_ENV_URL = "https://gist.githubusercontent.com/DrtorrentX/a5170d53baede92cfd063ee59f2034d1/raw/.env" or None
+CONFIG_ENV_URL = getConfig('CONFIG_ENV_URL') or None
 
 if CONFIG_ENV_URL:
     try:
@@ -30,7 +29,8 @@ if CONFIG_ENV_URL:
     except Exception as e:
         log_error(f"CONFIG_ENV_URL: {e}")
 
-CONFIG_JSON_URL = "https://gist.githubusercontent.com/DrtorrentX/660b68d2f139e17e79487cf99c2e59cb/raw/config.json" or None
+CONFIG_JSON_URL = getConfig('CONFIG_JSON_URL') or None
+
 if CONFIG_JSON_URL:
     try:
         res = rget(CONFIG_JSON_URL)
@@ -49,7 +49,7 @@ LOGGER = getLogger(__name__)
 
 
 
-BOT_TOKEN = "5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs" or None
+BOT_TOKEN = getConfig('BOT_TOKEN') or None
 if BOT_TOKEN is None:
     LOGGER.error('BOT_TOKEN is not set')
     exit(1)
@@ -64,19 +64,21 @@ except:
     LOGGER.error("Error: config.json is not valid")
     exit(1)
 try:
-    STATUS_UPDATE_INTERVAL = int(getConfig('STATUS_UPDATE_INTERVAL')) or 1800
+    STATUS_UPDATE_INTERVAL = int(getConfig('STATUS_UPDATE_INTERVAL')) or 10
 except:
-    STATUS_UPDATE_INTERVAL = 1800
+    STATUS_UPDATE_INTERVAL = 10
 
 TIME_ZONE = getConfig('TIME_ZONE') or 'Asia/Calcutta'
 
-HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://telegram.dog/drtorrentxupdates'><b>Status</b></a> <b>Dr. Torrent X Bots</b> 🤖"
+HEADER_MSG = getConfig('HEADER_MSG') or "🤖 <a href='https://github.com/junedkh/mirror-bot-status'><b>Status</b></a> <b>JMDKH Mirror Bots</b> 🤖"
 
-FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZjM9\n\n<b>⚒ Powered by</b> <a href='https://telegram.dog/drtorrentxupdates'>Dr. Torrent X Team ❤️</a>"
+FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+3XSC23Veq2s2MmRl\n\n<b>⚒ Powered by</b> <a href='https://t.me/JMDKH_Team'>JMDKH Team ❤️</a>"
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-updater = tgUpdater(bot=BOT_TOKEN, update_queue={'read_timeout': 20, 'connect_timeout': 15})
+
+updater = tgUpdater(token=BOT_TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
+
 
 def get_readable_time(seconds: int) -> str:
     result = ''
@@ -110,17 +112,15 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(context: CallbackContext):
-    job = context.job
-    channel = job.context
+def editMessage(text: str, channel: dict):
     try:
-        context.bot.edit_message_text(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
-                                      parse_mode='HTMl', disable_web_page_preview=True)
+        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
+                                    parse_mode='HTMl', disable_web_page_preview=True)
     except RetryAfter as r:
-        context.bot.send_message(channel['chat_id'], f"RetryAfter: {str(r)}")
-        context.job_queue.run_once(editMessage, r.retry_after, context=channel)
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return editMessage(text, channel)
     except Exception as e:
-        # Your existing error handling...
         if 'chat not found' in str(e).lower():
             LOGGER.error(f"Bot not found in {channel['chat_id']}")
         elif 'message to edit not found' in str(e).lower():
@@ -133,6 +133,7 @@ def editMessage(context: CallbackContext):
         delete_channel(channel)
         return
 
+
 def delete_channel(channel):
     for k, v in channels.items():
         if v['chat_id'] == channel['chat_id']:
@@ -140,6 +141,7 @@ def delete_channel(channel):
             del channels[k]
             del config['channels'][k]
             break
+
 
 def footer():
     msg = f"\n{FOOTER_MSG}\n"
