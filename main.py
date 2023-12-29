@@ -223,8 +223,13 @@ def main(update_queue: CallbackContext):
     except Exception as e:
         LOGGER.error(f"Error: {e}")
 
+def job_callback(update_queue: CallbackContext):
+    main(update_queue)
+    update_queue.job.context['job_queue'].run_once(job_callback, STATUS_UPDATE_INTERVAL)
+    
 if __name__ == '__main__':
     LOGGER.info("Starting...")
-    while True:
-        main()
-        sleep(STATUS_UPDATE_INTERVAL)
+    job_queue = updater.job_queue
+    job_queue.run_once(job_callback, 0)
+    updater.start_polling()
+    updater.idle()
