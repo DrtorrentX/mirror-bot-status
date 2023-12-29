@@ -74,14 +74,18 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZj
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-# Create your custom update queue
-update_queue = CallbackContext()
+from telegram.ext import Updater
+
+# ... (other imports and code)
+
+updater = Updater(BOT_TOKEN)
 
 # Configure the request_kwargs with desired parameters
-update_queue.bot_request_kwargs = {'read_timeout': 20, 'connect_timeout': 15}
+updater.bot._default_query_kwargs['timeout'] = 20
+updater.bot._default_query_kwargs['connect_timeout'] = 15
 
-# Pass the update_queue to the updater
-updater = Updater(BOT_TOKEN, update_queue=update_queue)
+# ... (rest of your code)
+
 
 def get_readable_time(seconds: int) -> str:
     result = ''
