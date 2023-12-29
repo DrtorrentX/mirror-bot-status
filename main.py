@@ -230,5 +230,5 @@ def job_callback(update_queue: CallbackContext):
 if __name__ == '__main__':
     LOGGER.info("Starting...")
     while True:
-        def main(update_queue: CallbackContext):
+        def main(update_queue: CallbackContext)
         sleep(STATUS_UPDATE_INTERVAL)
