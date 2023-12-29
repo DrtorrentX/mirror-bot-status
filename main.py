@@ -109,9 +109,9 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(text: str, channel: dict):
+def editMessage(text: str, channel: dict, context: CallbackContext):
     try:
-        updater.bot.edit_message_text(
+        context.bot.edit_message_text(
             text=text,
             message_id=channel['message_id'],
             chat_id=channel['chat_id'],
@@ -121,7 +121,7 @@ def editMessage(text: str, channel: dict):
     except RetryAfter as r:
         LOGGER.warning(f"RetryAfter exception: {r}")
         sleep(r.retry_after * 1.5)
-        return edit_message(text, channel)
+        return editMessage(text, channel, context)
     except Exception as e:
         handle_edit_message_error(e, channel)
 
