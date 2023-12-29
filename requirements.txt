@@ -1,4 +1,4 @@
-requests=2.31.0
-pytz=
-python-dotenv==1.0.0
+requests
+pytz
+python-dotenv
 python-telegram-bot==20.6
