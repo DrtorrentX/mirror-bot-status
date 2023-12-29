@@ -119,7 +119,7 @@ def editMessage(update: Update, context: CallbackContext):
             parse_mode='HTML',
             disable_web_page_preview=True
         )
-    except context.exceptions.RetryAfter as r:
+    except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
         return editMessage(update, context)
