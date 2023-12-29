@@ -74,11 +74,10 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZj
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-from telegram.ext import Updater
 
 # ... (other imports and code)
 
-updater = Updater(BOT_TOKEN)
+updater = Updater(BOT_TOKEN, update_queue=None)
 
 # Configure the request_kwargs with desired parameters
 updater.bot._default_query_kwargs['timeout'] = 20
