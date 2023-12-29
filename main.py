@@ -76,8 +76,8 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZj
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-updater = tgUpdater(token=BOT_TOKEN, use_context = True)
-
+token = "5171152924:AAGhbx29Y_6BBB6V13Csjif-HcRtxANzuMs"
+updater = tgUpdater(token, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
 
 def get_readable_time(seconds: int) -> str:
     result = ''
