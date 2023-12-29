@@ -202,34 +202,29 @@ def edit_bot_status(update_queue: CallbackContext):
     update_queue.bot.send_message(chat_id=update_queue.job.context['chat_id'], text=msg)
 
 
-def main(update_queue: CallbackContext):
+def main():
     _channels = channels.values()
     if len(_channels) == 0:
         LOGGER.warning("No channels found")
         exit(1)
     msg = f"{HEADER_MSG}\n"+"{}"+f"{footer()}"
-    status = edit_bot_status(update_queue)
+    status = edit_bot_status()
     try:
         for channel in _channels:
             LOGGER.info(f"Updating {channel['chat_id']}: {channel['message_id']}")
             sleep(0.5)
-            editMessage(update_queue, msg.format("<code>Updating...</code>"), channel)
+            editMessage(msg.format("<code>Updating...</code>"), channel)
             _status = msg.format(status)
             sleep(0.5)
             if len(_status.encode()) < 4000:
-                editMessage(update_queue, _status, channel)
+                editMessage(_status, channel)
             else:
                 LOGGER.warning(f"Message too long for {channel['chat_id']}")
     except Exception as e:
         LOGGER.error(f"Error: {e}")
 
-def job_callback(update_queue: CallbackContext):
-    main(update_queue)
-    update_queue.job.context['job_queue'].run_once(job_callback, STATUS_UPDATE_INTERVAL)
-
 if __name__ == '__main__':
     LOGGER.info("Starting...")
-    job_queue = updater.job_queue
-    job_queue.run_once(job_callback, 0)
-    updater.start_polling()
-    updater.idle()
+    while True:
+        main()
+        sleep(STATUS_UPDATE_INTERVAL)
