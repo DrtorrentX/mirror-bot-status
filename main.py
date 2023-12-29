@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 from pytz import timezone, utc
 from requests import get as rget
 from telegram.error import RetryAfter
-from telegram.ext import Updater as tgUpdater
+from telegram import Update, Bot
+from telegram.ext import Updater as tgUpdater, CallbackContext
 
 basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', handlers=[StreamHandler()], level=INFO)
 
@@ -109,25 +110,29 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(text: str, channel: dict):
+def editMessage(update: Update, context: CallbackContext):
     try:
-        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
-                                    parse_mode='HTMl', disable_web_page_preview=True)
-    except RetryAfter as r:
+        context.bot.edit_message_text(
+            text="New text",
+            chat_id=update.message.chat_id,
+            message_id=update.message.message_id,
+            parse_mode='HTML',
+            disable_web_page_preview=True
+        )
+    except context.exceptions.RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
-        return editMessage(text, channel)
+        return editMessage(update, context)
     except Exception as e:
         if 'chat not found' in str(e).lower():
-            LOGGER.error(f"Bot not found in {channel['chat_id']}")
+            LOGGER.error(f"Bot not found in {update.message.chat_id}")
         elif 'message to edit not found' in str(e).lower():
-            LOGGER.error(f"Message not found in {channel['chat_id']}")
+            LOGGER.error(f"Message not found in {update.message.chat_id}")
         elif 'chat_write_forbidden' in str(e).lower():
-            LOGGER.error(
-                f"Chat_write_forbidden in {channel['chat_id']}")
+            LOGGER.error(f"Chat_write_forbidden in {update.message.chat_id}")
         else:
             LOGGER.error(str(e))
-        delete_channel(channel)
+        delete_channel(update.message.chat_id)
         return
 
 def delete_channel(channel):
