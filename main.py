@@ -109,34 +109,26 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(text: str, channel: dict, context: CallbackContext):
+def editMessage(text: str, channel: dict):
     try:
-        context.bot.edit_message_text(
-            text=text,
-            message_id=channel['message_id'],
-            chat_id=channel['chat_id'],
-            parse_mode='HTML',
-            disable_web_page_preview=True
-        )
+        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
+                                    parse_mode='HTMl', disable_web_page_preview=True)
     except RetryAfter as r:
-        LOGGER.warning(f"RetryAfter exception: {r}")
+        LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
-        return editMessage(text, channel, context)
+        return editMessage(text, channel)
     except Exception as e:
-        handle_edit_message_error(e, channel)
-
-
-def handle_edit_message_error(error, channel):
-    if 'chat not found' in str(error).lower():
-        LOGGER.error(f"Bot not found in {channel['chat_id']}")
-    elif 'message to edit not found' in str(error).lower():
-        LOGGER.error(f"Message not found in {channel['chat_id']}")
-    elif 'chat_write_forbidden' in str(error).lower():
-        LOGGER.error(f"Chat_write_forbidden in {channel['chat_id']}")
-    else:
-        LOGGER.error(f"Unknown error: {error}")
-    delete_channel(channel)
-
+        if 'chat not found' in str(e).lower():
+            LOGGER.error(f"Bot not found in {channel['chat_id']}")
+        elif 'message to edit not found' in str(e).lower():
+            LOGGER.error(f"Message not found in {channel['chat_id']}")
+        elif 'chat_write_forbidden' in str(e).lower():
+            LOGGER.error(
+                f"Chat_write_forbidden in {channel['chat_id']}")
+        else:
+            LOGGER.error(str(e))
+        delete_channel(channel)
+        return
 
 def delete_channel(channel):
     for k, v in channels.items():
