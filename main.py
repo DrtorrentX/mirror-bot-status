@@ -110,7 +110,7 @@ def get_readable_size(size_in_bytes) -> str:
         return 'Error'
 
 
-def editMessage(text: str, channel: dict):
+def editMessage(channel: dict, text: dict):
     try:
         updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
                                     parse_mode='HTMl', disable_web_page_preview=True)
