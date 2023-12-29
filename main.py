@@ -229,7 +229,6 @@ def job_callback(update_queue: CallbackContext):
     
 if __name__ == '__main__':
     LOGGER.info("Starting...")
-    job_queue = updater.job_queue
-    job_queue.run_once(job_callback, 0)
-    updater.start_polling()
-    updater.idle()
+    while True:
+        main()
+        sleep(STATUS_UPDATE_INTERVAL)
