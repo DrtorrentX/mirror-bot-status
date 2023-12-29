@@ -112,7 +112,7 @@ def get_readable_size(size_in_bytes) -> str:
 
 def editMessage(bot: Bot, text: str, channel: dict):
     try:
-        bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
+        updater.bot.editMessageText(text=text, message_id=channel['message_id'], chat_id=channel['chat_id'],
                             parse_mode='HTML', disable_web_page_preview=True)
     except RetryAfter as r:
         LOGGER.warning(str(r))
