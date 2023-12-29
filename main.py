@@ -112,6 +112,10 @@ def get_readable_size(size_in_bytes) -> str:
 
 def editMessage(update: Update, context: CallbackContext):
     try:
+        if not hasattr(context, 'bot') or not hasattr(update.message, 'chat_id') or not hasattr(update.message, 'message_id'):
+            LOGGER.error("Invalid context or update object")
+            return
+
         context.bot.edit_message_text(
             text="New text",
             chat_id=update.message.chat_id,
