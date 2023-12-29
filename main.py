@@ -111,7 +111,8 @@ def get_readable_size(size_in_bytes) -> str:
 
 
 def editMessage(context: CallbackContext):
-    channel = context.job.context
+    job = context.job
+    channel = job.context
     try:
         context.bot.edit_message_text(
             text=context.args[0],  # Assuming the text is passed as a command argument
@@ -124,6 +125,7 @@ def editMessage(context: CallbackContext):
         context.bot.send_message(channel['chat_id'], f"RetryAfter: {str(r)}")
         context.job_queue.run_once(editMessage, r.retry_after, context=channel)
     except Exception as e:
+        # Your existing error handling...
         if 'chat not found' in str(e).lower():
             LOGGER.error(f"Bot not found in {channel['chat_id']}")
         elif 'message to edit not found' in str(e).lower():
