@@ -1,7 +1,7 @@
 from datetime import datetime
 from json import loads as json_loads
 from logging import INFO, StreamHandler, basicConfig, error as log_error, getLogger, info as log_info
-from os import path as ospath
+from os import environ, path as ospath
 from time import sleep
 
 from dotenv import load_dotenv
