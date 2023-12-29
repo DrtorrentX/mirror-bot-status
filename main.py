@@ -74,7 +74,16 @@ FOOTER_MSG = getConfig('FOOTER_MSG') or "🫂 Join: https://t.me/+B9ZF0UDMcM5mZj
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-updater = Updater(token=BOT_TOKEN, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
+updater = Updater(BOT_TOKEN)
+
+# Define your custom update queue
+update_queue = CallbackContext()
+
+# Configure the update_queue with desired parameters
+update_queue.request_kwargs = {'read_timeout': 20, 'connect_timeout': 15}
+
+# Pass the update_queue to the updater
+updater.update_queue = update_queue
 
 def get_readable_time(seconds: int) -> str:
     result = ''
