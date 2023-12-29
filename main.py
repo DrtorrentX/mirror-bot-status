@@ -202,22 +202,22 @@ def edit_bot_status(update_queue: CallbackContext):
     update_queue.bot.send_message(chat_id=update_queue.job.context['chat_id'], text=msg)
 
 
-def main():
+def main(update_queue: CallbackContext):
     _channels = channels.values()
     if len(_channels) == 0:
         LOGGER.warning("No channels found")
         exit(1)
     msg = f"{HEADER_MSG}\n"+"{}"+f"{footer()}"
-    status = edit_bot_status()
+    status = edit_bot_status(update_queue)
     try:
         for channel in _channels:
             LOGGER.info(f"Updating {channel['chat_id']}: {channel['message_id']}")
             sleep(0.5)
-            editMessage(msg.format("<code>Updating...</code>"), channel)
+            editMessage(update_queue, msg.format("<code>Updating...</code>"), channel)
             _status = msg.format(status)
             sleep(0.5)
             if len(_status.encode()) < 4000:
-                editMessage(_status, channel)
+                editMessage(update_queue, _status, channel)
             else:
                 LOGGER.warning(f"Message too long for {channel['chat_id']}")
     except Exception as e:
