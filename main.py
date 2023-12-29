@@ -80,8 +80,8 @@ SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 updater = Updater(BOT_TOKEN, update_queue=None)
 
 # Configure the request_kwargs with desired parameters
-updater.bot._default_query_kwargs['timeout'] = 20
-updater.bot._default_query_kwargs['connect_timeout'] = 15
+updater.bot.default_query_timeout = 20
+updater.bot.default_query_connect_timeout = 15
 
 # ... (rest of your code)
 
